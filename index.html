@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha API - Produtos</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px #0001;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .produto {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .produto:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>📦 Minha API de Produtos</h1>
+
+        <div class="card">
+            <h2>Cadastrar produto</h2>
+
+            <input type="text" id="nome" placeholder="Nome do produto">
+            <input type="number" id="preco" placeholder="Preço">
+            <input type="number" id="quantidade" placeholder="Quantidade">
+
+            <button onclick="cadastrarProduto()">Cadastrar</button>
+        </div>
+
+        <div class="card">
+            <h2>Produtos cadastrados</h2>
+
+            <button onclick="listarProdutos()">Atualizar lista</button>
+
+            <div id="lista"></div>
+        </div>
+
+    </div>
+
+    <script>
+
+        const API_URL = "http://127.0.0.1:8001";
+
+        // Listar produtos
+        async function listarProdutos() {
+
+            const resposta = await fetch(`${API_URL}/produtos`);
+
+            const produtos = await resposta.json();
+
+            const lista = document.getElementById("lista");
+
+            lista.innerHTML = "";
+
+            produtos.forEach(produto => {
+
+                lista.innerHTML += `
+                    <div class="produto">
+                        <strong>${produto.nome}</strong><br>
+                        Preço: R$ ${produto.preco.toFixed(2)}<br>
+                        Quantidade: ${produto.quantidade}
+                    </div>
+                `;
+
+            });
+
+        }
+
+        // Cadastrar produto
+        async function cadastrarProduto() {
+
+            const nome = document.getElementById("nome").value;
+            const preco = Number(document.getElementById("preco").value);
+            const quantidade = Number(document.getElementById("quantidade").value);
+
+            const resposta = await fetch(`${API_URL}/produtos`, {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    nome: nome,
+                    preco: preco,
+                    quantidade: quantidade
+                })
+
+            });
+
+            const dados = await resposta.json();
+
+            alert(dados.mensagem);
+
+            listarProdutos();
+
+        }
+
+        // Carregar produtos ao abrir a página
+        listarProdutos();
+
+    </script>
+
+</body>
+</html>
