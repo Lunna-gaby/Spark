@@ -51,9 +51,9 @@ class ReservaDB(Base):
     matricula = Column(String)
     equipamento = Column(String)
     data = Column(String)
-    hora = Column(String)
-
-
+    hora_retirada = Column(String)
+    hora_devolucao = Column(String)
+    status = Column(String, default="Ativa")
 # =========================
 # CRIAR TABELAS
 # =========================
@@ -106,8 +106,8 @@ class Reserva(BaseModel):
     matricula: str
     equipamento: str
     data: str
-    hora: str
-
+    hora_retirada: str
+    hora_devolucao: str
 
 # =========================
 # PÁGINA INICIAL
@@ -331,16 +331,11 @@ def pagina_reservas():
                     >
 
 
-                    <label for="hora">
-                        Horário
-                    </label>
+                   <label for="hora_retirada">Horário de retirada</label>
+<input type="time" id="hora_retirada" required>
 
-                    <input
-                        type="time"
-                        id="hora"
-                        required
-                    >
-
+<label for="hora_devolucao">Horário de devolução</label>
+<input type="time" id="hora_devolucao" required>
 
                     <button type="submit">
                         Confirmar reserva
@@ -420,23 +415,25 @@ def pagina_reservas():
 
                     const dados = {
 
-                        nome_aluno:
-                            document.getElementById("nome").value,
+    nome_aluno:
+        document.getElementById("nome").value,
 
-                        matricula:
-                            document.getElementById("matricula").value,
+    matricula:
+        document.getElementById("matricula").value,
 
-                        equipamento:
-                            document.getElementById("equipamento").value,
+    equipamento:
+        document.getElementById("equipamento").value,
 
-                        data:
-                            document.getElementById("data").value,
+    data:
+        document.getElementById("data").value,
 
-                        hora:
-                            document.getElementById("hora").value
+    hora_retirada:
+        document.getElementById("hora_retirada").value,
 
-                    };
+    hora_devolucao:
+        document.getElementById("hora_devolucao").value
 
+};
 
                     try {
 
@@ -530,7 +527,7 @@ def listar_equipamentos():
 
             "descricao": equipamento.descricao,
 
-            "quantidade": equipamento.quantidade
+            "quantidade": equipamento.quantidade,
 
         })
 
@@ -545,81 +542,469 @@ def listar_equipamentos():
 
 @app.post("/reservas")
 def criar_reserva(reserva: Reserva):
-
     db = SessionLocal()
 
     nova_reserva = ReservaDB(
-
         nome_aluno=reserva.nome_aluno,
-
         matricula=reserva.matricula,
-
         equipamento=reserva.equipamento,
-
         data=reserva.data,
-
-        hora=reserva.hora
-
+        hora_retirada=reserva.hora_retirada,
+        hora_devolucao=reserva.hora_devolucao,
+        status="Ativa"
     )
 
     db.add(nova_reserva)
-
     db.commit()
-
     db.refresh(nova_reserva)
 
     resultado = {
-
         "id": nova_reserva.id,
-
         "nome_aluno": nova_reserva.nome_aluno,
-
         "matricula": nova_reserva.matricula,
-
         "equipamento": nova_reserva.equipamento,
-
         "data": nova_reserva.data,
-
-        "hora": nova_reserva.hora
-
+        "hora_retirada": nova_reserva.hora_retirada,
+        "hora_devolucao": nova_reserva.hora_devolucao,
+        "status": nova_reserva.status
     }
 
     db.close()
 
     return {
-
-        "mensagem":
-            "Reserva realizada com sucesso!",
-
-        "reserva":
-            resultado
-
+        "mensagem": "Reserva realizada com sucesso!",
+        "reserva": resultado
     }
 
 
 # =========================
-# LISTAR RESERVAS
+# PÁGINA DE RESERVAS REALIZADAS
+# =========================
+
+@app.get("/reservas-realizadas", response_class=HTMLResponse)
+def pagina_reservas_realizadas():
+    return """
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reservas Realizadas - ReservaEdu</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #075985, #16a34a);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 32px;
+        }
+
+        .subtitulo {
+            color: #e0f2fe;
+            margin-top: 8px;
+        }
+
+        .voltar {
+            text-decoration: none;
+            background: white;
+            color: #075985;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .voltar:hover {
+            background: #f1f5f9;
+        }
+
+        #lista {
+            display: grid;
+            gap: 18px;
+        }
+
+        .reserva {
+            background: white;
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .reserva h2 {
+            color: #075985;
+            margin-bottom: 15px;
+        }
+
+        .informacao {
+            margin: 8px 0;
+            color: #334155;
+        }
+
+        .informacao strong {
+            color: #0f172a;
+        }
+
+        .acoes {
+            margin-top: 18px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .excluir {
+            border: none;
+            background: #dc2626;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .excluir:hover {
+            background: #b91c1c;
+        }
+
+        .vazio {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 15px;
+            color: #475569;
+        }
+
+        .carregando {
+            color: white;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="topo">
+            <div>
+                <h1>📋 Reservas realizadas</h1>
+                <p class="subtitulo">
+                    Consulte e gerencie as reservas do ReservaEdu.
+                </p>
+            </div>
+
+            <a href="/" class="voltar">
+                ← Voltar
+            </a>
+        </div>
+
+        <div id="lista">
+            <p class="carregando">Carregando reservas...</p>
+        </div>
+
+    </div>
+
+    <script>
+
+        async function carregarReservas() {
+
+            const lista = document.getElementById("lista");
+
+            try {
+
+                const resposta = await fetch("/api/reservas");
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao carregar reservas");
+                }
+
+                const reservas = await resposta.json();
+
+                lista.innerHTML = "";
+
+                if (reservas.length === 0) {
+
+                    lista.innerHTML = `
+                        <div class="vazio">
+                            <h2>📭 Nenhuma reserva encontrada</h2>
+                            <p>Quando uma reserva for realizada, ela aparecerá aqui.</p>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+                reservas.forEach(reserva => {
+
+                    const card = document.createElement("div");
+
+                    card.className = "reserva";
+
+                    card.innerHTML = `
+                        <h2>📅 Reserva #${reserva.id}</h2>
+
+                        <p class="informacao">
+                            <strong>Aluno:</strong>
+                            ${reserva.nome_aluno}
+                        </p>
+
+                        <p class="informacao">
+                            <strong>Matrícula:</strong>
+                            ${reserva.matricula}
+                        </p>
+
+                        <p class="informacao">
+                            <strong>Equipamento:</strong>
+                            ${reserva.equipamento}
+                        </p>
+
+                        <p class="informacao">
+                            <strong>Data:</strong>
+                            ${reserva.data}
+                        </p>
+
+                       <p class="informacao">
+    <strong>Retirada:</strong>
+    ${reserva.hora_retirada}
+</p>
+
+<p class="informacao">
+    <strong>Devolução:</strong>
+    ${reserva.hora_devolucao}
+</p>
+
+<p class="informacao">
+    <strong>Status:</strong>
+    🟢 ${reserva.status}
+</p>
+
+                        <div class="acoes">
+
+    <select
+        onchange="alterarStatus(${reserva.id}, this.value)"
+        style="
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            margin-right: 10px;
+            font-weight: bold;
+        "
+    >
+        <option value="Ativa" ${reserva.status === "Ativa" ? "selected" : ""}>
+            🟢 Ativa
+        </option>
+
+        <option value="Em andamento" ${reserva.status === "Em andamento" ? "selected" : ""}>
+            🟡 Em andamento
+        </option>
+
+        <option value="Devolvida" ${reserva.status === "Devolvida" ? "selected" : ""}>
+            🔵 Devolvida
+        </option>
+
+        <option value="Cancelada" ${reserva.status === "Cancelada" ? "selected" : ""}>
+            🔴 Cancelada
+        </option>
+    </select>
+
+    <button
+        class="excluir"
+        onclick="excluirReserva(${reserva.id})">
+        🗑️ Excluir
+    </button>
+
+</div>
+
+                    lista.appendChild(card);
+
+                });
+
+            } catch (erro) {
+
+                lista.innerHTML = `
+                    <div class="vazio">
+                        <h2>❌ Erro</h2>
+                        <p>Não foi possível carregar as reservas.</p>
+                    </div>
+                `;
+
+                console.error(erro);
+            }
+        }
+
+
+        async function excluirReserva(id) {
+
+            const confirmar = confirm(
+                "Tem certeza que deseja excluir esta reserva?"
+            );
+
+            if (!confirmar) {
+                return;
+            }
+async function alterarStatus(id, status) {
+
+    try {
+
+        const resposta = await fetch(
+            `/reservas/${id}/status?status=${encodeURIComponent(status)}`,
+            {
+                method: "PUT"
+            }
+        );
+
+        const resultado = await resposta.json();
+
+        if (!resposta.ok) {
+            alert("❌ Não foi possível alterar o status.");
+            return;
+        }
+
+        alert("✅ Status alterado com sucesso!");
+
+        carregarReservas();
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("❌ Erro ao alterar o status.");
+    }
+}
+            try {
+
+                const resposta = await fetch(
+                    `/reservas/${id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    alert("Não foi possível excluir a reserva.");
+                    return;
+                }
+
+                alert("✅ Reserva excluída com sucesso!");
+
+                carregarReservas();
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                alert(
+                    "❌ Erro ao tentar excluir a reserva."
+                );
+            }
+        }
+
+
+        carregarReservas();
+
+    </script>
+
+</body>
+</html>
+"""
+@app.delete("/reservas/{reserva_id}")
+def excluir_reserva(reserva_id: int):
+    db = SessionLocal()
+
+    reserva = db.query(ReservaDB).filter(
+        ReservaDB.id == reserva_id
+    ).first()
+
+    if reserva is None:
+        db.close()
+        return {"erro": "Reserva não encontrada"}
+
+    db.delete(reserva)
+    db.commit()
+    db.close()
+
+    return {"mensagem": "Reserva excluída com sucesso!"}
+@app.put("/reservas/{reserva_id}/status")
+def alterar_status(reserva_id: int, status: str):
+    db = SessionLocal()
+
+    reserva = db.query(ReservaDB).filter(
+        ReservaDB.id == reserva_id
+    ).first()
+
+    if reserva is None:
+        db.close()
+        return {"erro": "Reserva não encontrada"}
+
+    status_validos = [
+        "Ativa",
+        "Em andamento",
+        "Devolvida",
+        "Cancelada"
+    ]
+
+    if status not in status_validos:
+        db.close()
+        return {"erro": "Status inválido"}
+
+    reserva.status = status
+
+    db.commit()
+    db.refresh(reserva)
+
+    db.close()
+
+    return {
+        "mensagem": "Status alterado com sucesso!",
+        "status": reserva.status
+    }
+# =========================
+# API PARA LISTAR RESERVAS
 # =========================
 
 @app.get("/api/reservas")
 def listar_reservas():
-
     db = SessionLocal()
-
     reservas = db.query(ReservaDB).all()
-
     resultado = []
 
     for reserva in reservas:
-
-        resultado.append({
-            "id": reserva.id,
-            "nome_aluno": reserva.nome_aluno,
-            "matricula": reserva.matricula,
-            "equipamento": reserva.equipamento,
-            "data": reserva.data,
-            "hora": reserva.hora
-        })
+       resultado.append({
+    "id": reserva.id,
+    "nome_aluno": reserva.nome_aluno,
+    "matricula": reserva.matricula,
+    "equipamento": reserva.equipamento,
+    "data": reserva.data,
+    "hora_retirada": reserva.hora_retirada,
+    "hora_devolucao": reserva.hora_devolucao,
+    "status": reserva.status
+})
 
     db.close()
 
