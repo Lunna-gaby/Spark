@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Equipamentos | ReservaEdu</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f7fc;
+            color: #183153;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1261a0, #168aad);
+            color: white;
+            padding: 25px 8%;
+            box-shadow: 0 4px 15px #0001;
+        }
+
+        header h2 {
+            font-size: 25px;
+        }
+
+        header span {
+            color: #a8f0d1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .titulo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .titulo h1 {
+            font-size: 34px;
+            margin-bottom: 12px;
+            color: #164e78;
+        }
+
+        .titulo p {
+            color: #718096;
+            font-size: 16px;
+        }
+
+        .equipamentos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px #1b496515;
+            transition: 0.3s;
+            border: 1px solid #e7eef5;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px #1b496525;
+        }
+
+        .icone {
+            background: #e5f4ff;
+            width: 65px;
+            height: 65px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 21px;
+            margin-bottom: 12px;
+            color: #164e78;
+        }
+
+        .card p {
+            color: #718096;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .quantidade {
+            display: inline-block;
+            background: #e3f8ee;
+            color: #168052;
+            padding: 9px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .voltar {
+            display: inline-block;
+            margin-top: 40px;
+            background: #1677a8;
+            color: white;
+            padding: 13px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .voltar:hover {
+            background: #105b83;
+            transform: scale(1.03);
+        }
+
+        .rodape {
+            text-align: center;
+            padding: 25px;
+            color: #8a9bad;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>Reserva<span>Edu</span> 🎓</h2>
+</header>
+
+<div class="container">
+
+    <div class="titulo">
+        <h1>Equipamentos disponíveis</h1>
+        <p>Confira os equipamentos disponíveis para reserva na sua escola.</p>
+    </div>
+
+    <div class="equipamentos">
+
+        {% for equipamento in equipamentos %}
+
+        <div class="card">
+
+            <div class="icone">
+                {% if equipamento.nome == "Notebook" %}
+                    💻
+                {% elif equipamento.nome == "Projetor" %}
+                    📽️
+               {% elif equipamento.nome == "Caixa de Som" %}
+                     🔈
+                {% elif equipamento.nome == "Microfone" %}
+                    🎤
+                {% else %}
+                    📦
+                {% endif %}
+            </div>
+
+            <h2>{{ equipamento.nome }}</h2>
+
+            <p>{{ equipamento.descricao }}</p>
+
+            <span class="quantidade">
+                {{ equipamento.quantidade }} unidades disponíveis
+            </span>
+
+        </div>
+
+        {% empty %}
+
+        <p>Nenhum equipamento cadastrado ainda.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <div style="text-align: center;">
+        <a href="/" class="voltar">← Voltar ao início</a>
+    </div>
+
+</div>
+
+<div class="rodape">
+    © 2026 ReservaEdu — Sistema de Reserva de Equipamentos Escolares
+</div>
+
+</body>
+</html>

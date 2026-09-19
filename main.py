@@ -537,6 +537,256 @@ def listar_equipamentos():
     db.close()
 
     return resultado
+   
+# =========================
+# PÁGINA DE EQUIPAMENTOS
+# =========================
+
+@app.get("/ver-equipamentos", response_class=HTMLResponse)
+def pagina_equipamentos():
+
+    db = SessionLocal()
+
+    equipamentos = db.query(EquipamentoDB).all()
+
+    html = """
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Equipamentos - ReservaEdu</title>
+
+        <style>
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f3f6fa;
+                color: #1e293b;
+            }
+
+            header {
+                background: linear-gradient(
+                    135deg,
+                    #075985,
+                    #0e7490,
+                    #15803d
+                );
+
+                color: white;
+                padding: 30px 20px;
+                text-align: center;
+            }
+
+            header h1 {
+                font-size: 32px;
+                margin-bottom: 8px;
+            }
+
+            header p {
+                opacity: 0.9;
+            }
+
+            .container {
+                width: 90%;
+                max-width: 1000px;
+                margin: 40px auto;
+            }
+
+            .grid {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(auto-fit, minmax(250px, 1fr));
+
+                gap: 20px;
+            }
+
+            .card {
+                background: white;
+
+                padding: 25px;
+
+                border-radius: 16px;
+
+                box-shadow:
+                    0 8px 25px rgba(0, 0, 0, 0.08);
+
+                transition: 0.2s;
+            }
+
+            .card:hover {
+                transform: translateY(-3px);
+
+                box-shadow:
+                    0 12px 30px rgba(0, 0, 0, 0.12);
+            }
+
+            .icone {
+                width: 55px;
+                height: 55px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background: #dcfce7;
+
+                border-radius: 12px;
+
+                font-size: 27px;
+
+                margin-bottom: 18px;
+            }
+
+            .card h2 {
+                color: #075985;
+
+                margin-bottom: 10px;
+
+                font-size: 21px;
+            }
+
+            .descricao {
+                color: #64748b;
+
+                line-height: 1.5;
+
+                margin-bottom: 15px;
+            }
+
+            .quantidade {
+                display: inline-block;
+
+                background: #dcfce7;
+
+                color: #166534;
+
+                padding: 7px 12px;
+
+                border-radius: 20px;
+
+                font-size: 14px;
+
+                font-weight: bold;
+            }
+
+            .vazio {
+                background: white;
+
+                padding: 40px;
+
+                border-radius: 16px;
+
+                text-align: center;
+
+                color: #64748b;
+            }
+
+            .voltar {
+                display: inline-block;
+
+                margin-top: 30px;
+
+                color: #075985;
+
+                text-decoration: none;
+
+                font-weight: bold;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header>
+
+            <h1>📦 Equipamentos pedagógicos</h1>
+
+            <p>
+                Confira os equipamentos disponíveis para reserva.
+            </p>
+
+        </header>
+
+
+        <div class="container">
+
+            <div class="grid">
+    """
+
+    if equipamentos:
+
+        for equipamento in equipamentos:
+
+            html += f"""
+                <div class="card">
+
+                    <div class="icone">
+                        📦
+                    </div>
+
+                    <h2>
+                        {equipamento.nome}
+                    </h2>
+
+                    <p class="descricao">
+                        {equipamento.descricao}
+                    </p>
+
+                    <span class="quantidade">
+                        {equipamento.quantidade} disponível(is)
+                    </span>
+
+                </div>
+            """
+
+    else:
+
+        html += """
+            </div>
+
+            <div class="vazio">
+
+                <h2>Nenhum equipamento cadastrado.</h2>
+
+                <p>
+                    Ainda não existem equipamentos disponíveis.
+                </p>
+
+            </div>
+        """
+
+    html += """
+            </div>
+
+            <a href="/" class="voltar">
+                ← Voltar para a página inicial
+            </a>
+
+        </div>
+
+    </body>
+
+    </html>
+    """
+
+    db.close()
+
+    return HTMLResponse(content=html)
 
 
 # =========================
@@ -624,3 +874,241 @@ def listar_reservas():
     db.close()
 
     return resultado
+    # =========================
+# PÁGINA DE RESERVAS REALIZADAS
+# =========================
+
+@app.get("/reservas-realizadas", response_class=HTMLResponse)
+def pagina_reservas_realizadas():
+
+    db = SessionLocal()
+
+    reservas = db.query(ReservaDB).all()
+
+    html = """
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+
+        <title>Reservas Realizadas - ReservaEdu</title>
+
+        <style>
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f3f6fa;
+                color: #1e293b;
+            }
+
+            header {
+                background: linear-gradient(
+                    135deg,
+                    #075985,
+                    #0e7490,
+                    #15803d
+                );
+
+                color: white;
+                padding: 30px 20px;
+                text-align: center;
+            }
+
+            header h1 {
+                font-size: 32px;
+                margin-bottom: 8px;
+            }
+
+            header p {
+                opacity: 0.9;
+            }
+
+            .container {
+                width: 90%;
+                max-width: 1000px;
+                margin: 40px auto;
+            }
+
+            .grid {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(auto-fit, minmax(280px, 1fr));
+
+                gap: 20px;
+            }
+
+            .card {
+                background: white;
+
+                padding: 25px;
+
+                border-radius: 16px;
+
+                box-shadow:
+                    0 8px 25px rgba(0, 0, 0, 0.08);
+            }
+
+            .icone {
+                width: 55px;
+                height: 55px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background: #dbeafe;
+
+                border-radius: 12px;
+
+                font-size: 27px;
+
+                margin-bottom: 18px;
+            }
+
+            .card h2 {
+                color: #075985;
+
+                margin-bottom: 15px;
+
+                font-size: 21px;
+            }
+
+            .informacao {
+                margin-bottom: 10px;
+
+                color: #475569;
+            }
+
+            .informacao strong {
+                color: #1e293b;
+            }
+
+            .vazio {
+                background: white;
+
+                padding: 40px;
+
+                border-radius: 16px;
+
+                text-align: center;
+
+                color: #64748b;
+            }
+
+            .voltar {
+                display: inline-block;
+
+                margin-top: 30px;
+
+                color: #075985;
+
+                text-decoration: none;
+
+                font-weight: bold;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header>
+
+            <h1>📅 Reservas realizadas</h1>
+
+            <p>
+                Confira as reservas cadastradas no sistema.
+            </p>
+
+        </header>
+
+
+        <div class="container">
+
+    """
+
+    if reservas:
+
+        html += '<div class="grid">'
+
+        for reserva in reservas:
+
+            html += f"""
+                <div class="card">
+
+                    <div class="icone">
+                        📅
+                    </div>
+
+                    <h2>
+                        {reserva.equipamento}
+                    </h2>
+
+                    <p class="informacao">
+                        <strong>Aluno:</strong>
+                        {reserva.nome_aluno}
+                    </p>
+
+                    <p class="informacao">
+                        <strong>Matrícula:</strong>
+                        {reserva.matricula}
+                    </p>
+
+                    <p class="informacao">
+                        <strong>Data:</strong>
+                        {reserva.data}
+                    </p>
+
+                    <p class="informacao">
+                        <strong>Horário:</strong>
+                        {reserva.hora}
+                    </p>
+
+                </div>
+            """
+
+        html += "</div>"
+
+    else:
+
+        html += """
+            <div class="vazio">
+
+                <h2>Nenhuma reserva realizada.</h2>
+
+                <p>
+                    Ainda não existem reservas cadastradas.
+                </p>
+
+            </div>
+        """
+
+    html += """
+
+            <a href="/" class="voltar">
+                ← Voltar para a página inicial
+            </a>
+
+        </div>
+
+    </body>
+
+    </html>
+    """
+
+    db.close()
+
+    return HTMLResponse(content=html)

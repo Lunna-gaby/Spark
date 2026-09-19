@@ -7,3 +7,5 @@ db.sqlite3
 .vscode/
 media/
 staticfiles/
+*.db
+*.pyc

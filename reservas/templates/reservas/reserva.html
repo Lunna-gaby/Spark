@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fazer Reserva | ReservaEdu</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f7fc;
+            color: #183153;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1261a0, #168aad);
+            color: white;
+            padding: 25px 8%;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        header span {
+            color: #a8f0d1;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px #1b496515;
+        }
+
+        h1 {
+            color: #164e78;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d5e1ed;
+            border-radius: 9px;
+            font-size: 15px;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #168aad;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #168aad;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1261a0;
+        }
+
+        .sucesso {
+            background: #e3f8ee;
+            color: #168052;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .voltar {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #1677a8;
+            text-decoration: none;
+        }
+
+        .erro {
+            color: #c0392b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>Reserva<span>Edu</span> 🎓</h2>
+</header>
+
+<div class="container">
+    <div class="card">
+
+        <h1>Fazer uma reserva</h1>
+
+        <p class="subtitulo">
+            Preencha os dados para reservar um equipamento escolar.
+        </p>
+
+        {% if sucesso %}
+            <div class="sucesso">
+                Reserva realizada com sucesso!
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for campo in form %}
+                <label>{{ campo.label }}</label>
+                {{ campo }}
+
+                {% for erro in campo.errors %}
+                    <p class="erro">{{ erro }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            <button type="submit">Confirmar reserva</button>
+        </form>
+
+        <a href="/" class="voltar">← Voltar ao início</a>
+
+    </div>
+</div>
+
+</body>
+</html>

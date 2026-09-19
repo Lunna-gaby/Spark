@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reservas Realizadas | ReservaEdu</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul: #075985;
+            --azul-escuro: #0c2d48;
+            --verde: #10b981;
+            --fundo: #f1f5f9;
+            --texto: #1e293b;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--fundo);
+            color: var(--texto);
+            min-height: 100vh;
+        }
+
+        /* CABEÇALHO */
+
+        .cabecalho {
+            background: linear-gradient(
+                135deg,
+                #075985,
+                #087e8b,
+                #15803d
+            );
+
+            padding: 35px 8%;
+            color: white;
+        }
+
+        .topo {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icone {
+            width: 55px;
+            height: 55px;
+            background: white;
+            color: var(--azul);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+        }
+
+        .logo h1 span {
+            color: #6ee7b7;
+        }
+
+        .logo p {
+            font-size: 13px;
+            margin-top: 5px;
+            color: #d1fae5;
+        }
+
+        .voltar {
+            text-decoration: none;
+            color: white;
+            padding: 12px 18px;
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .voltar:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* CONTEÚDO */
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+        .titulo {
+            margin-bottom: 25px;
+        }
+
+        .titulo h2 {
+            font-size: 30px;
+            color: var(--azul-escuro);
+            margin-bottom: 10px;
+        }
+
+        .titulo p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* CARTÃO PRINCIPAL */
+
+        .cartao {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+            border: 1px solid #e2e8f0;
+        }
+
+        .cartao-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .cartao-topo h3 {
+            color: var(--azul-escuro);
+            font-size: 20px;
+        }
+
+        .etiqueta {
+            background: #d1fae5;
+            color: #047857;
+            padding: 8px 13px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* TABELA */
+
+        .tabela-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        thead {
+            background: #f0f9ff;
+        }
+
+        th {
+            color: #075985;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            padding: 16px 14px;
+        }
+
+        td {
+            padding: 17px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        tbody tr {
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .nome {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .equipamento {
+            display: inline-block;
+            background: #dbeafe;
+            color: #075985;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .horario {
+            color: #047857;
+            font-weight: bold;
+        }
+
+        /* BOTÃO EXCLUIR */
+
+        .form-excluir {
+            margin: 0;
+        }
+
+        .btn-excluir {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-excluir:hover {
+            background: #dc2626;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* RESERVAS VAZIAS */
+
+        .vazio {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .vazio-icone {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .vazio h3 {
+            color: var(--azul-escuro);
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .vazio p {
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* BOTÕES */
+
+        .btn-nova {
+            display: inline-block;
+            background: var(--verde);
+            color: white;
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-nova:hover {
+            background: #059669;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(16,185,129,0.2);
+        }
+
+        .rodape {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* CELULAR */
+
+        @media (max-width: 600px) {
+            .cabecalho {
+                padding: 25px 20px;
+            }
+
+            .logo h1 {
+                font-size: 23px;
+            }
+
+            .container {
+                margin: 30px auto;
+                padding: 0 15px;
+            }
+
+            .titulo h2 {
+                font-size: 25px;
+            }
+
+            .cartao {
+                padding: 18px;
+            }
+
+            .cartao-topo h3 {
+                font-size: 17px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+
+    <header class="cabecalho">
+
+        <div class="topo">
+
+            <div class="logo">
+
+                <div class="logo-icone">🎓</div>
+
+                <div>
+                    <h1>Reserva<span>Edu</span></h1>
+                    <p>Sistema de reservas escolares</p>
+                </div>
+
+            </div>
+
+            <a href="/" class="voltar">
+                ← Voltar ao início
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTEÚDO -->
+
+    <main class="container">
+
+        <div class="titulo">
+
+            <h2>📋 Reservas realizadas</h2>
+
+            <p>
+                Confira as reservas cadastradas no sistema
+                e gerencie os equipamentos da sua escola.
+            </p>
+
+        </div>
+
+
+        <section class="cartao">
+
+            <div class="cartao-topo">
+
+                <h3>Histórico de reservas</h3>
+
+                <span class="etiqueta">
+                    ✔ Reservas cadastradas
+                </span>
+
+            </div>
+
+
+            {% if reservas %}
+
+            <div class="tabela-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Responsável</th>
+                            <th>Matrícula</th>
+                            <th>Equipamento</th>
+                            <th>Data</th>
+                            <th>Retirada</th>
+                            <th>Devolução</th>
+                            <th>Ação</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for reserva in reservas %}
+
+                        <tr>
+
+                            <td class="nome">
+                                {{ reserva.nome_responsavel }}
+                            </td>
+
+                            <td>
+                                {{ reserva.matricula }}
+                            </td>
+
+                            <td>
+                                <span class="equipamento">
+                                    📦 {{ reserva.equipamento }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ reserva.data|date:"d/m/Y" }}
+                            </td>
+
+                            <td class="horario">
+                                {{ reserva.hora|time:"H:i" }}
+                            </td>
+
+                            <td class="horario">
+                                {{ reserva.hora_devolucao|time:"H:i" }}
+                            </td>
+
+                            <td>
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'excluir_reserva' reserva.id %}"
+                                    class="form-excluir"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn-excluir"
+                                        onclick="return confirm('Tem certeza que deseja excluir esta reserva?')"
+                                    >
+                                        🗑️ Excluir
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="vazio">
+
+                <div class="vazio-icone">📭</div>
+
+                <h3>Nenhuma reserva encontrada</h3>
+
+                <p>
+                    Ainda não existem reservas cadastradas.<br>
+                    Que tal realizar a primeira?
+                </p>
+
+                <a href="/reservar/" class="btn-nova">
+                    + Fazer uma reserva
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <div style="margin-top: 25px;">
+
+            <a href="/reservar/" class="btn-nova">
+                + Fazer uma nova reserva
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <footer class="rodape">
+        ReservaEdu © Sistema de Reservas Escolares
+    </footer>
+
+</body>
+</html>
