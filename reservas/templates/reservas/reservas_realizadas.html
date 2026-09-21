@@ -220,6 +220,34 @@
             color: #047857;
             font-weight: bold;
         }
+        .status {
+    display: inline-block;
+    padding: 7px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.status-pendente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-aprovada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-recusada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-concluida {
+    background: #dbeafe;
+    color: #1e40af;
+}
 
         /* BOTÃO EXCLUIR */
 
@@ -399,8 +427,9 @@
                             <th>Equipamento</th>
                             <th>Data</th>
                             <th>Retirada</th>
-                            <th>Devolução</th>
-                            <th>Ação</th>
+                           <th>Devolução</th>
+                           <th>Status</th>
+                           <th>Ação</th>
                         </tr>
 
                     </thead>
@@ -431,6 +460,11 @@
 
                             <td class="horario">
                                 {{ reserva.hora|time:"H:i" }}
+                           <td>
+    <span class="status status-{{ reserva.status|lower }}">
+        ● {{ reserva.get_status_display }}
+    </span>
+</td>
                             </td>
 
                             <td class="horario">
@@ -493,14 +527,7 @@
         </section>
 
 
-        <div style="margin-top: 25px;">
-
-            <a href="/reservar/" class="btn-nova">
-                + Fazer uma nova reserva
-            </a>
-
-        </div>
-
+      
     </main>
 
 

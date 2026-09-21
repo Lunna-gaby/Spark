@@ -13,7 +13,18 @@ class Equipamento(models.Model):
 class Reserva(models.Model):
     nome_responsavel = models.CharField(max_length=100)
     matricula = models.CharField(max_length=20)
+    STATUS_CHOICES = [
+        ('Pendente', 'Pendente'),
+        ('Aprovada', 'Aprovada'),
+        ('Recusada', 'Recusada'),
+        ('Concluída', 'Concluída'),
+    ]
 
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='Pendente'
+    )
     equipamento = models.ForeignKey(
         Equipamento,
         on_delete=models.CASCADE
