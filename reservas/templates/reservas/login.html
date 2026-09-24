@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | ReservaEdu</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #062f4f, #075985, #087f8c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Decoração do fundo */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            background: #ffffff0b;
+            pointer-events: none;
+        }
+
+        body::before {
+            width: 450px;
+            height: 450px;
+            top: -150px;
+            right: -100px;
+        }
+
+        body::after {
+            width: 350px;
+            height: 350px;
+            bottom: -150px;
+            left: -100px;
+        }
+
+        .pagina {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 580px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px #001b2d50;
+            position: relative;
+            z-index: 1;
+            animation: aparecer 0.7s ease;
+        }
+
+        /* Lado esquerdo */
+        .painel-esquerdo {
+            background: linear-gradient(145deg, #075985, #087f8c);
+            color: white;
+            padding: 55px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .marca-icone {
+            width: 55px;
+            height: 55px;
+            background: #ffffff20;
+            border: 1px solid #ffffff35;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 29px;
+        }
+
+        .marca h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .marca h1 span {
+            color: #6ee7b7;
+        }
+
+        .marca p {
+            font-size: 12px;
+            color: #dbeafe;
+            margin-top: 3px;
+        }
+
+        .conteudo-esquerdo {
+            margin: 55px 0;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            padding: 9px 15px;
+            border-radius: 30px;
+            background: #ffffff18;
+            border: 1px solid #ffffff30;
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+
+        .conteudo-esquerdo h2 {
+            font-size: 36px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .conteudo-esquerdo h2 span {
+            color: #6ee7b7;
+        }
+
+        .conteudo-esquerdo > p {
+            color: #dbeafe;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .beneficios {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .beneficio {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #f0fdfa;
+        }
+
+        .beneficio-icone {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff20;
+            border-radius: 9px;
+        }
+
+        .texto-final {
+            color: #cbd5e1;
+            font-size: 12px;
+        }
+
+        /* Lado direito */
+        .painel-direito {
+            padding: 55px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .boas-vindas {
+            margin-bottom: 32px;
+        }
+
+        .boas-vindas .subtitulo {
+            color: #059669;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .boas-vindas h2 {
+            color: #0f172a;
+            font-size: 30px;
+            letter-spacing: -0.8px;
+            margin-bottom: 10px;
+        }
+
+        .boas-vindas p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .campo {
+            margin-bottom: 22px;
+        }
+
+        .campo label {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 15px 16px;
+            border: 1px solid #dbe3ed;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .campo input::placeholder {
+            color: #94a3b8;
+        }
+
+        .campo input:focus {
+            border-color: #0891b2;
+            background: white;
+            box-shadow: 0 0 0 4px #0891b215;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #075985, #0891b2);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 7px 18px #07598525;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px #07598535;
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .mensagem-erro {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 13px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .rodape {
+            text-align: center;
+            margin-top: 35px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .rodape span {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Ajuste para celular */
+        @media (max-width: 800px) {
+            body {
+                padding: 18px;
+            }
+
+            .pagina {
+                max-width: 480px;
+                grid-template-columns: 1fr;
+            }
+
+            .painel-esquerdo {
+                padding: 30px;
+            }
+
+            .conteudo-esquerdo {
+                margin: 30px 0 10px;
+            }
+
+            .conteudo-esquerdo h2 {
+                font-size: 27px;
+            }
+
+            .beneficios,
+            .texto-final {
+                display: none;
+            }
+
+            .painel-direito {
+                padding: 35px 30px;
+            }
+
+            .boas-vindas h2 {
+                font-size: 26px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .painel-esquerdo,
+            .painel-direito {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="pagina">
+
+        <!-- PAINEL ESQUERDO -->
+        <section class="painel-esquerdo">
+
+            <div class="marca">
+                <div class="marca-icone">🎓</div>
+
+                <div>
+                    <h1>Reserva<span>Edu</span></h1>
+                    <p>Tecnologia a favor da sua escola</p>
+                </div>
+            </div>
+
+            <div class="conteudo-esquerdo">
+
+                <div class="etiqueta">
+                    ✨ Organização e praticidade para sua escola
+                </div>
+
+                <h2>
+                    Equipamentos pedagógicos
+                    <span>sempre à disposição.</span>
+                </h2>
+
+                <p>
+                    Um jeito simples e organizado de reservar
+                    equipamentos escolares, evitar conflitos de
+                    horários e facilitar o dia a dia da sua escola.
+                </p>
+
+                <div class="beneficios">
+
+                    <div class="beneficio">
+                        <div class="beneficio-icone">✓</div>
+                        Reservas organizadas
+                    </div>
+
+                    <div class="beneficio">
+                        <div class="beneficio-icone">✓</div>
+                        Controle de equipamentos
+                    </div>
+
+                    <div class="beneficio">
+                        <div class="beneficio-icone">✓</div>
+                        Mais praticidade para todos
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="texto-final">
+                ReservaEdu · Sistema de reservas escolares
+            </div>
+
+        </section>
+
+        <!-- PAINEL DIREITO -->
+        <section class="painel-direito">
+
+            <div class="boas-vindas">
+                <div class="subtitulo">Acesse sua conta</div>
+
+                <h2>Bem-vindo(a)! 👋</h2>
+
+                <p>
+                    Entre com seus dados para continuar
+                    utilizando o ReservaEdu.
+                </p>
+            </div>
+
+            {% if erro %}
+                <div class="mensagem-erro">
+                    ⚠️ {{ erro }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="campo">
+                    <label for="usuario">Usuário</label>
+
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="username"
+                        placeholder="Digite seu usuário"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="password"
+                        placeholder="Digite sua senha"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Entrar na minha conta →
+                </button>
+
+            </form>
+
+            <div class="rodape">
+                Feito para sua escola com <span>♥</span><br><br>
+                ReservaEdu © 2026
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -3,6 +3,41 @@ from .models import Reserva
 
 
 class ReservaForm(forms.ModelForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        equipamento = cleaned_data.get('equipamento')
+        data = cleaned_data.get('data')
+        hora = cleaned_data.get('hora')
+        hora_devolucao = cleaned_data.get('hora_devolucao')
+
+        if not all([equipamento, data, hora, hora_devolucao]):
+            return cleaned_data
+
+        if hora_devolucao <= hora:
+            self.add_error(
+                'hora_devolucao',
+                'A devolução deve ser após o horário de retirada.'
+            )
+            return cleaned_data
+
+        conflitos = Reserva.objects.filter(
+            equipamento=equipamento,
+            data=data,
+            hora__lt=hora_devolucao,
+            hora_devolucao__gt=hora,
+            status__in=['Pendente', 'Aprovada']
+        )
+
+        if conflitos.count() >= equipamento.quantidade:
+            raise forms.ValidationError(
+                'Não há unidades disponíveis desse equipamento '
+                'nesse horário. Escolha outro horário.'
+            )
+
+        return cleaned_data
+
     class Meta:
         model = Reserva
 

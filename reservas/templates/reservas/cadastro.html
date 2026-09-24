@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro | ReservaEdu</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #062f4f, #075985, #087f8c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Decoração do fundo */
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            background: #ffffff0b;
+            pointer-events: none;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            right: -100px;
+        }
+
+        body::after {
+            width: 350px;
+            height: 350px;
+            bottom: -150px;
+            left: -100px;
+        }
+
+        /* Cartão principal */
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px #001b2d45;
+            position: relative;
+            z-index: 1;
+            animation: aparecer 0.6s ease;
+        }
+
+        /* Cabeçalho */
+
+        .cabecalho {
+            background: linear-gradient(135deg, #075985, #087f8c);
+            padding: 28px 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .logo-icone {
+            width: 55px;
+            height: 55px;
+            background: #ffffff20;
+            border: 1px solid #ffffff30;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 29px;
+        }
+
+        .logo h1 {
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo h1 span {
+            color: #6ee7b7;
+        }
+
+        .logo p {
+            color: #dbeafe;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* Conteúdo */
+
+        .conteudo {
+            padding: 35px 40px 30px;
+        }
+
+        .titulo {
+            margin-bottom: 28px;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            color: #059669;
+            background: #ecfdf5;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .titulo h2 {
+            color: #0f172a;
+            font-size: 28px;
+            letter-spacing: -0.7px;
+            margin-bottom: 8px;
+        }
+
+        .titulo p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Formulário */
+
+        .formulario {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .campo label {
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #dbe3ed;
+            border-radius: 11px;
+            background: #f8fafc;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .campo input::placeholder {
+            color: #94a3b8;
+        }
+
+        .campo input:focus {
+            border-color: #0891b2;
+            background: white;
+            box-shadow: 0 0 0 4px #0891b215;
+        }
+
+        .campo-completo {
+            grid-column: 1 / -1;
+        }
+
+        /* Botão */
+
+        .btn-cadastro {
+            grid-column: 1 / -1;
+            width: 100%;
+            padding: 15px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #059669, #0891b2);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 7px 18px #05966920;
+        }
+
+        .btn-cadastro:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px #05966935;
+        }
+
+        .btn-cadastro:active {
+            transform: scale(0.98);
+        }
+
+        /* Mensagem de erro */
+
+        .mensagem-erro {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 13px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* Rodapé */
+
+        .rodape {
+            text-align: center;
+            margin-top: 25px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .rodape a {
+            color: #0891b2;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .rodape a:hover {
+            text-decoration: underline;
+        }
+
+        .linha {
+            height: 1px;
+            background: #e2e8f0;
+            margin-top: 28px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding: 16px;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        /* Animação */
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Celular */
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .cabecalho {
+                padding: 24px;
+            }
+
+            .conteudo {
+                padding: 28px 24px;
+            }
+
+            .formulario {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .campo-completo,
+            .btn-cadastro {
+                grid-column: auto;
+            }
+
+            .titulo h2 {
+                font-size: 24px;
+            }
+
+            .logo h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <!-- CABEÇALHO -->
+
+        <header class="cabecalho">
+
+            <div class="logo-icone">🎓</div>
+
+            <div class="logo">
+                <h1>Reserva<span>Edu</span></h1>
+                <p>Tecnologia a favor da sua escola</p>
+            </div>
+
+        </header>
+
+        <!-- FORMULÁRIO -->
+
+        <section class="conteudo">
+
+            <div class="titulo">
+
+                <div class="etiqueta">
+                    ✨ Crie sua conta
+                </div>
+
+                <h2>Faça parte do ReservaEdu!</h2>
+
+                <p>
+                    Preencha seus dados e tenha acesso ao
+                    sistema de reservas escolares.
+                </p>
+
+            </div>
+
+            {% if erro %}
+                <div class="mensagem-erro">
+                    ⚠️ {{ erro }}
+                </div>
+            {% endif %}
+
+            <form method="POST" class="formulario">
+
+                {% csrf_token %}
+
+                <div class="campo campo-completo">
+                    <label for="nome">Nome completo</label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        placeholder="Digite seu nome completo"
+                        required
+                        autocomplete="name"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="username">Nome de usuário</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Crie seu usuário"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="email">E-mail</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Digite seu e-mail"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Crie uma senha"
+                        required
+                        autocomplete="new-password"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="confirmar_senha">
+                        Confirmar senha
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmar_senha"
+                        name="confirmar_senha"
+                        placeholder="Repita sua senha"
+                        required
+                        autocomplete="new-password"
+                    >
+                </div>
+
+                <button type="submit" class="btn-cadastro">
+                    Criar minha conta →
+                </button>
+
+            </form>
+
+            <div class="rodape">
+                Já tem uma conta?
+                <a href="{% url 'login' %}">Fazer login</a>
+            </div>
+
+            <div class="linha"></div>
+
+            <div class="copyright">
+                ReservaEdu © 2026 · Sistema de reservas escolares
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -11,6 +12,13 @@ class Equipamento(models.Model):
 
 
 class Reserva(models.Model):
+    usuario = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name='reservas',
+    null=True,
+    blank=True
+)
     nome_responsavel = models.CharField(max_length=100)
     matricula = models.CharField(max_length=20)
     STATUS_CHOICES = [
