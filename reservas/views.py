@@ -119,3 +119,61 @@ def fazer_cadastro(request):
     return render(request, 'reservas/cadastro.html', {
         'erro': erro
     })
+@login_required
+def area_direcao(request):
+    return render(request, 'reservas/direcao.html')
+@login_required
+def direcao_reservas(request):
+    reservas = Reserva.objects.all().order_by('-id')
+
+    return render(request, 'reservas/direcao_reservas.html', {
+        'reservas': reservas
+    })
+@login_required
+def aprovar_reserva(request, id):
+    reserva = get_object_or_404(Reserva, id=id)
+
+    reserva.status = 'Aprovada'
+    reserva.save()
+
+    return redirect('direcao_reservas')
+
+
+@login_required
+def recusar_reserva(request, id):
+    reserva = get_object_or_404(Reserva, id=id)
+
+    reserva.status = 'Recusada'
+    reserva.save()
+
+    return redirect('direcao_reservas')
+@login_required
+def excluir_reserva_direcao(request, id):
+    reserva = get_object_or_404(Reserva, id=id)
+
+    if request.method == 'POST':
+        reserva.delete()
+
+    return redirect('direcao_reservas')
+@login_required
+def direcao_equipamentos(request):
+    equipamentos = Equipamento.objects.all().order_by('nome')
+
+    return render(request, 'reservas/direcao_equipamentos.html', {
+        'equipamentos': equipamentos
+    })
+@login_required
+def direcao_usuarios(request):
+    usuarios = User.objects.all().order_by('username')
+
+    return render(request, 'reservas/direcao_usuarios.html', {
+        'usuarios': usuarios
+    })
+@login_required
+def excluir_usuario_direcao(request, id):
+    usuario = get_object_or_404(User, id=id)
+
+    if request.method == 'POST':
+        usuario.delete()
+
+    return redirect('direcao_usuarios')
