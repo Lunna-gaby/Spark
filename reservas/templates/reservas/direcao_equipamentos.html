@@ -136,7 +136,21 @@
 
                 <div class="equipamento">
 
-                    <h3>📦 {{ equipamento.nome }}</h3>
+                    <h3>
+    {% if equipamento.nome == "Projetor" %}
+        📽️
+    {% elif equipamento.nome == "Caixa de Som" %}
+        🔊
+    {% elif equipamento.nome == "Microfone" %}
+        🎤
+    {% elif equipamento.nome == "Laboratório de Informática" %}
+        💻
+    {% else %}
+        📦
+    {% endif %}
+
+    {{ equipamento.nome }}
+</h3>
 
                     <p class="info">
                         {{ equipamento.descricao }}
