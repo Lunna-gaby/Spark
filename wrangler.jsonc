@@ -1,0 +1,6 @@
+{
+  "name": "reservaedu",
+  "main": "src/index.py",
+  "compatibility_date": "2026-10-06",
+  "compatibility_flags": ["python_workers"]
+}
