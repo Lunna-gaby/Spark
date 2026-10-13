@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS equipamentos(id INTEGER PRIMARY KEY AUTOINCREMENT,nome TEXT NOT NULL UNIQUE,descricao TEXT NOT NULL DEFAULT '',quantidade INTEGER NOT NULL CHECK(quantidade>=0));
+CREATE TABLE IF NOT EXISTS reservas(id INTEGER PRIMARY KEY AUTOINCREMENT,nome_aluno TEXT NOT NULL,matricula TEXT NOT NULL,equipamento TEXT NOT NULL REFERENCES equipamentos(nome),data TEXT NOT NULL,hora_retirada TEXT NOT NULL,hora_devolucao TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'Ativa' CHECK(status IN ('Ativa','Em andamento','Devolvida','Cancelada')),CHECK(hora_retirada<hora_devolucao));
+CREATE INDEX IF NOT EXISTS idx_reservas_disponibilidade ON reservas(equipamento,data,status,hora_retirada,hora_devolucao);
+INSERT OR IGNORE INTO equipamentos(nome,descricao,quantidade) VALUES
+('Projetor','Projetor multimídia para apresentações',2),('Notebook','Notebook para atividades pedagógicas',5),('Caixa de Som','Caixa de som para eventos e apresentações',3),('Microfone','Microfone para apresentações e eventos',4);
