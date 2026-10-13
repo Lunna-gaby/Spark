@@ -99,7 +99,7 @@ http://127.0.0.1:8001/login/
 
 ## 🔐 7. Acesso ao sistema
 
-As funcionalidades disponíveis dependem do tipo de usuário e das permissões configuradas no sistema.
+As funcionalidades disponíveis dependem do tipo de usuário e das permissões configuradas no sistema..
 
 - **Aluno:** consultar equipamentos e realizar reservas.
 - **Direção:** acessar o painel administrativo e gerenciar as solicitações de reserva.
