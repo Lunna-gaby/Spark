@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipamentos - ReservaEdu</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f6fa;
+            color: #1e293b;
+        }
+
+        header {
+            background: #075985;
+            color: white;
+            padding: 25px 40px;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        header p {
+            margin-top: 6px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        h2 {
+            color: #075985;
+            margin-bottom: 25px;
+        }
+
+        .lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+        }
+
+        .icone {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #075985;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .quantidade {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .voltar {
+            display: inline-block;
+            margin-top: 30px;
+            color: #075985;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .mensagem {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>ReservaEdu</h1>
+    <p>Equipamentos Pedagógicos</p>
+</header>
+
+<main class="container">
+
+    <h2>📦 Equipamentos disponíveis</h2>
+
+    <div id="lista" class="lista">
+        <div class="mensagem">Carregando equipamentos...</div>
+    </div>
+
+    <a href="/" class="voltar">
+        ← Voltar para a página inicial
+    </a>
+
+</main>
+
+<script>
+    function escolherEmoji(nome) {
+        const nomeNormalizado = nome.toLowerCase();
+
+        if (nomeNormalizado.includes("projetor")) return "📽️";
+        if (nomeNormalizado.includes("notebook")) return "💻";
+        if (nomeNormalizado.includes("caixa de som")) return "🔊";
+        if (nomeNormalizado.includes("microfone")) return "🎤";
+        if (nomeNormalizado.includes("laboratório")) return "🖥️";
+
+        return "📦";
+    }
+
+    async function carregarEquipamentos() {
+        const lista = document.getElementById("lista");
+
+        try {
+            const resposta = await fetch("/equipamentos");
+
+            if (!resposta.ok) {
+                throw new Error("Não foi possível carregar os equipamentos.");
+            }
+
+            const equipamentos = await resposta.json();
+
+            lista.innerHTML = "";
+
+            if (!equipamentos.length) {
+                lista.innerHTML =
+                    '<div class="mensagem">Nenhum equipamento cadastrado.</div>';
+                return;
+            }
+
+            equipamentos.forEach(equipamento => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                const icone = document.createElement("div");
+                icone.className = "icone";
+                icone.textContent = escolherEmoji(equipamento.nome);
+
+                const titulo = document.createElement("h3");
+                titulo.textContent = equipamento.nome;
+
+                const descricao = document.createElement("p");
+                descricao.textContent =
+                    equipamento.descricao || "Equipamento pedagógico";
+
+                const quantidade = document.createElement("div");
+                quantidade.className = "quantidade";
+                quantidade.textContent =
+                    "Quantidade cadastrada: " + equipamento.quantidade;
+
+                card.append(icone, titulo, descricao, quantidade);
+                lista.appendChild(card);
+            });
+
+        } catch (erro) {
+            lista.innerHTML =
+                '<div class="mensagem">Erro ao carregar os equipamentos. Tente novamente.</div>';
+        }
+    }
+
+    carregarEquipamentos();
+</script>
+
+</body>
+</html>
