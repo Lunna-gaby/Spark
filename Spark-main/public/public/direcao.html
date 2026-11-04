@@ -1,0 +1,172 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área da Direção - ReservaEdu</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: linear-gradient(135deg, #075985, #15803d);
+            color: white;
+            padding: 35px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 45px auto;
+        }
+
+        .titulo {
+            margin-bottom: 25px;
+            color: #075985;
+        }
+
+        .titulo h2 {
+            margin-bottom: 8px;
+        }
+
+        .lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s;
+            border-top: 5px solid #15803d;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        .icone {
+            font-size: 42px;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            color: #075985;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .indisponivel {
+            border-top-color: #94a3b8;
+            cursor: default;
+        }
+
+        .indisponivel:hover {
+            transform: none;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .voltar {
+            display: inline-block;
+            margin-top: 35px;
+            color: #075985;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🏫 Área da Direção</h1>
+    <p>Painel administrativo do ReservaEdu</p>
+</header>
+
+<main class="container">
+
+    <div class="titulo">
+        <h2>Bem-vindo à administração!</h2>
+        <p>Escolha o que deseja gerenciar.</p>
+    </div>
+
+    <div class="lista">
+
+        <a href="/reservas-realizadas" class="card">
+            <div class="icone">📋</div>
+            <h3>Gerenciar reservas</h3>
+            <p>Consultar reservas, aprovar, recusar e acompanhar solicitações.</p>
+        </a>
+
+        <a href="/equipamentos.html" class="card">
+            <div class="icone">📦</div>
+            <h3>Equipamentos</h3>
+            <p>Consultar equipamentos cadastrados e suas quantidades.</p>
+        </a>
+
+        <div class="card indisponivel">
+            <div class="icone">👥</div>
+            <h3>Usuários</h3>
+            <p>Área de gerenciamento de usuários.</p>
+            <span class="status">Em desenvolvimento</span>
+        </div>
+
+    </div>
+
+    <a href="/" class="voltar">← Voltar para a página inicial</a>
+
+</main>
+
+<footer>
+    ReservaEdu • Sistema de Gestão de Equipamentos Pedagógicos
+</footer>
+
+</body>
+</html>
