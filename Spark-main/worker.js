@@ -18,8 +18,7 @@ export default {async fetch(request,env) {
     return new Response('Acesso restrito à direção. Usuário: admin.',{status:401,headers:{'WWW-Authenticate':'Basic realm="Direcao ReservaEdu", charset="UTF-8"','Cache-Control':'no-store'}});
   }
   if(['POST','PUT','DELETE'].includes(method)&&request.headers.get('Origin')&&request.headers.get('Origin')!==url.origin) return fail('Origem não permitida.',403);
-  try {
-  ['/','/reservas','/reservas-realizadas','/direcao'].includes(path)
+  try {if(method==='GET'&&['/','/reservas','/reservas-realizadas','/direcao'].includes(path)) {
       const asset={'/':'/index.html','/reservas':'/reservas.html','/reservas-realizadas':'/reservas-realizadas.html','/direcao':'/direcao.html'}[path];
       const response=await env.ASSETS.fetch(new Request(new URL(asset,url),request));
       const headers=new Headers(response.headers);headers.set('X-Content-Type-Options','nosniff');
