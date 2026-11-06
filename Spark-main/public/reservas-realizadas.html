@@ -216,8 +216,8 @@
 </p>
 
 <p class="informacao">
-    <strong>Status:</strong>
-    🟢 ${escapeHtml(reserva.status)}
+   <strong>Status:</strong>
+${formatarStatus(reserva.status)}
 </p>
 
                         <div class="acoes">
@@ -231,23 +231,21 @@
             margin-right: 10px;
             font-weight: bold;
         "
-    >
-        <option value="Ativa" ${reserva.status === "Ativa" ? "selected" : ""}>
-            🟢 Ativa
-        </option>
+    <option value="Aprovada" ${reserva.status === "Aprovada" ? "selected" : ""}>
+    🟢 Aprovada
+</option>
 
-        <option value="Em andamento" ${reserva.status === "Em andamento" ? "selected" : ""}>
-            🟡 Em andamento
-        </option>
+<option value="Em andamento" ${reserva.status === "Em andamento" ? "selected" : ""}>
+    🟡 Em andamento
+</option>
 
-        <option value="Devolvida" ${reserva.status === "Devolvida" ? "selected" : ""}>
-            🔵 Devolvida
-        </option>
+<option value="Recusada" ${reserva.status === "Recusada" ? "selected" : ""}>
+    🔴 Recusada
+</option>
 
-        <option value="Cancelada" ${reserva.status === "Cancelada" ? "selected" : ""}>
-            🔴 Cancelada
-        </option>
-    </select>
+<option value="Concluída" ${reserva.status === "Concluída" ? "selected" : ""}>
+    🔵 Concluída
+</option>
 
     <button
         class="excluir"
@@ -315,7 +313,16 @@
             }
         }
 
+function formatarStatus(status) {
+    const cores = {
+        "Aprovada": "🟢",
+        "Em andamento": "🟡",
+        "Recusada": "🔴",
+        "Concluída": "🔵"
+    };
 
+    return `${cores[status] || "⚪"} ${escapeHtml(status)}`;
+}
 async function alterarStatus(id, status) {
 
     try {

@@ -1,4 +1,4 @@
-const statuses = ['Ativa','Em andamento','Devolvida','Cancelada'];
+const statuses = ['Aprovada','Em andamento','Recusada','Concluída'];
 const json = (body,status=200) => Response.json(body,{status,headers:{'Cache-Control':'no-store'}});
 const fail = (erro,status=400) => json({erro},status);
 async function authorized(request,env) {
@@ -12,15 +12,15 @@ async function authorized(request,env) {
 export default {async fetch(request,env) {
   const url=new URL(request.url),path=url.pathname.replace(/\/$/,'')||'/',method=request.method;
   const match=path.match(/^\/reservas\/([1-9]\d*)(\/status)?$/);
-  const privateRoute=['/reservas-realizadas','/reservas-realizadas.html','/api/reservas'].includes(path)||Boolean(match);
+ const privateRoute=['/reservas-realizadas','/reservas-realizadas.html','/api/reservas','/direcao','/direcao.html'].includes(path)||Boolean(match);
   if(privateRoute&&!await authorized(request,env)) {
     if(!env.ADMIN_PASSWORD) return fail('Configure a senha da administração antes de acessar.',503);
     return new Response('Acesso restrito à direção. Usuário: admin.',{status:401,headers:{'WWW-Authenticate':'Basic realm="Direcao ReservaEdu", charset="UTF-8"','Cache-Control':'no-store'}});
   }
   if(['POST','PUT','DELETE'].includes(method)&&request.headers.get('Origin')&&request.headers.get('Origin')!==url.origin) return fail('Origem não permitida.',403);
   try {
-    if(method==='GET'&&['/','/reservas','/reservas-realizadas'].includes(path)) {
-      const asset={'/':'/index.html','/reservas':'/reservas.html','/reservas-realizadas':'/reservas-realizadas.html'}[path];
+if(method==='GET'&&['/','/reservas','/reservas-realizadas','/direcao'].includes(path)) {
+const asset={'/':'/index.html','/reservas':'/reservas.html','/reservas-realizadas':'/reservas-realizadas.html','/direcao':'/direcao.html'}[path];
       const response=await env.ASSETS.fetch(new Request(new URL(asset,url),request));
       const headers=new Headers(response.headers);headers.set('X-Content-Type-Options','nosniff');
       if(privateRoute)headers.set('Cache-Control','no-store');
@@ -54,9 +54,9 @@ export default {async fetch(request,env) {
       if(method==='PUT'&&match[2]) {
         const status=url.searchParams.get('status');if(!statuses.includes(status))return fail('Status inválido.');
         const result=await env.DB.prepare(`UPDATE reservas SET status=? WHERE id=? AND
-          (? NOT IN ('Ativa','Em andamento') OR
+          (? NOT IN ('Aprovada','Em andamento') OR
           (SELECT quantidade FROM equipamentos WHERE nome=reservas.equipamento)>
-          (SELECT COUNT(*) FROM reservas r WHERE r.id!=reservas.id AND r.equipamento=reservas.equipamento AND r.data=reservas.data AND r.status IN ('Ativa','Em andamento') AND r.hora_retirada<reservas.hora_devolucao AND r.hora_devolucao>reservas.hora_retirada))`).bind(status,id,status).run();
+          (SELECT COUNT(*) FROM reservas r WHERE r.id!=reservas.id AND r.equipamento=reservas.equipamento AND r.data=reservas.data AND r.status IN ('Aprovada','Em andamento') AND r.hora_retirada<reservas.hora_devolucao AND r.hora_devolucao>reservas.hora_retirada))`).bind(status,id,status).run();
         if(!result.meta.changes)return fail('Não há unidade disponível para reativar essa reserva.',409);
         return json({mensagem:'Status alterado com sucesso!',status});
       }
