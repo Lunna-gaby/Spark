@@ -12,15 +12,20 @@ async function authorized(request,env) {
 export default {async fetch(request,env) {
   const url=new URL(request.url),path=url.pathname.replace(/\/$/,'')||'/',method=request.method;
   const match=path.match(/^\/reservas\/([1-9]\d*)(\/status)?$/);
- const privateRoute=['/reservas-realizadas','/reservas-realizadas.html','/api/reservas','/direcao','/direcao.html'].includes(path)||Boolean(match);
+  const privateRoute=['/reservas-realizadas','/reservas-realizadas.html','/api/reservas','/direcao','/direcao.html'].includes(path)||Boolean(match);
   if(privateRoute&&!await authorized(request,env)) {
     if(!env.ADMIN_PASSWORD) return fail('Configure a senha da administração antes de acessar.',503);
     return new Response('Acesso restrito à direção. Usuário: admin.',{status:401,headers:{'WWW-Authenticate':'Basic realm="Direcao ReservaEdu", charset="UTF-8"','Cache-Control':'no-store'}});
   }
   if(['POST','PUT','DELETE'].includes(method)&&request.headers.get('Origin')&&request.headers.get('Origin')!==url.origin) return fail('Origem não permitida.',403);
+<<<<<<< HEAD
   try {
 if(method==='GET'&&['/','/reservas','/reservas-realizadas','/direcao'].includes(path)) {
 const asset={'/':'/index.html','/reservas':'/reservas.html','/reservas-realizadas':'/reservas-realizadas.html','/direcao':'/direcao.html'}[path];
+=======
+  try {if(method==='GET'&&['/','/reservas','/reservas-realizadas','/direcao'].includes(path)) {
+      const asset={'/':'/index.html','/reservas':'/reservas.html','/reservas-realizadas':'/reservas-realizadas.html','/direcao':'/direcao.html'}[path];
+>>>>>>> origin/main
       const response=await env.ASSETS.fetch(new Request(new URL(asset,url),request));
       const headers=new Headers(response.headers);headers.set('X-Content-Type-Options','nosniff');
       if(privateRoute)headers.set('Cache-Control','no-store');
